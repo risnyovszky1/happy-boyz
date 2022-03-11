@@ -2,30 +2,55 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
-{
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use Yii;
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+class User extends ActiveRecord implements \yii\web\IdentityInterface
+{
+    public $_id;
+    public $_name;
+    public $_email;
+    public $_password;
+    public $_is_admin;
+    public $_created_at;
+    public $_modified_at;
+    public $_deleted_at;
+
+    public static function tableName()
+    {
+        return 'users';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['name'], 'string', 'max' => 255],
+            [['email'], 'string', 'max' => 255],
+            [['password'], 'string', 'max' => 255],
+            [['is_admin'], 'boolean'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('user', 'ID'),
+            'name' => Yii::t('user', 'Username'),
+            'email' => Yii::t('user', 'Email'),
+            'is_admin' => Yii::t('user', 'Admin'),
+            'password' => Yii::t('user', 'Password'),
+            'created_at' => Yii::t('user', 'Created At'),
+            'updated_at' => Yii::t('user', 'Updated At'),
+            'deleted_at' => Yii::t('user', 'Deleted At'),
+        ];
+    }
 
 
     /**
@@ -33,7 +58,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return self::findOne($id);
     }
 
     /**
@@ -41,13 +66,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        throw new NotSupportedException('Not supported action!');
     }
 
     /**
@@ -58,13 +77,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return self::findOne(['name' => $username]);
     }
 
     /**
@@ -80,7 +93,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return md5($this->id . $this->email);
     }
 
     /**
@@ -88,7 +101,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return md5($this->id . $this->email) === $authKey;
     }
 
     /**
@@ -100,5 +113,46 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $password;
+    }
+
+    /**
+     * @inheritdoc
+     */
+//    public function behaviors()
+//    {
+//        return [
+//            'created_at' => [
+//                'class' => 'yii\behaviors\TimestampBehavior',
+//                'value' => function ($event) {
+//                    return gmdate("Y-m-d H:i:s");
+//                },
+//            ],
+//            'modified_at' => [
+//                'class' => 'yii\behaviors\TimestampBehavior',
+//                'value' => function ($event) {
+//                    return gmdate("Y-m-d H:i:s");
+//                },
+//            ],
+//            'deleted_at' => [
+//                'class' => 'yii\behaviors\TimestampBehavior',
+//                'value' => function ($event) {
+//                    return gmdate("Y-m-d H:i:s");
+//                },
+//            ],
+//        ];
+//    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+//        if (!isset($this->created_at)) {
+//            $this->created_at = date('Y-m-d H:i:s');
+//        }
+//
+//        $this->modified_at = date('Y-m-d H:i:s');
+
+        return parent::beforeSave($insert);
     }
 }
