@@ -3,19 +3,18 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%training}}`.
+ * Handles the creation of table `{{%players}}`.
  */
-class m220226_135312_create_training_table extends Migration
+class m220329_101125_create_players_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('trainings', [
+        $this->createTable('players', [
             'id' => $this->primaryKey(),
-            'name' => $this->string()->null(),
-            'date' => $this->timestamp(),
+            'name' => $this->string()->notNull(),
             'created_at' => $this->timestamp()->null(),
             'modified_at' => $this->timestamp()->null(),
             'deleted_at' => $this->timestamp()->null(),
@@ -27,6 +26,6 @@ class m220226_135312_create_training_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('trainings');
+        $this->dropTable('players');
     }
 }

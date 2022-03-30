@@ -3,10 +3,9 @@
 namespace app\models;
 
 use yii\base\NotSupportedException;
-use yii\db\ActiveRecord;
 use Yii;
 
-class User extends ActiveRecord implements \yii\web\IdentityInterface
+class User extends BaseModel implements \yii\web\IdentityInterface
 {
     public $_id;
     public $_name;
@@ -41,14 +40,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('user', 'ID'),
-            'name' => Yii::t('user', 'Username'),
-            'email' => Yii::t('user', 'Email'),
-            'is_admin' => Yii::t('user', 'Admin'),
-            'password' => Yii::t('user', 'Password'),
-            'created_at' => Yii::t('user', 'Created At'),
-            'updated_at' => Yii::t('user', 'Updated At'),
-            'deleted_at' => Yii::t('user', 'Deleted At'),
+            'id' => Yii::t('app', 'ID'),
+            'name' => Yii::t('app', 'Username'),
+            'email' => Yii::t('app', 'Email'),
+            'is_admin' => Yii::t('app', 'Admin'),
+            'password' => Yii::t('app', 'Password'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
+            'deleted_at' => Yii::t('app', 'Deleted At'),
         ];
     }
 

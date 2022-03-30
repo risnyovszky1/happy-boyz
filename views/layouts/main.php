@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+
 /** @var string $content */
 
 use app\assets\AppAsset;
@@ -27,6 +28,24 @@ AppAsset::register($this);
 
 <header>
     <?php
+
+    $items = Yii::$app->user->isGuest
+        ? ['label' => 'Login', 'url' => ['/site/login']]
+        : [
+            ['label' => 'Players', 'url' => ['/player']],
+            ['label' => 'Trainings', 'url' => ['/training']],
+            '<li>'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->name . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>',
+        ];
+
+    ?>
+    <?php
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
@@ -35,23 +54,8 @@ AppAsset::register($this);
         ],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->name . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'options' => ['class' => 'navbar-nav ml-auto'],
+        'items' => $items,
     ]);
     NavBar::end();
     ?>
@@ -69,8 +73,11 @@ AppAsset::register($this);
 
 <footer class="footer mt-auto py-3 text-muted">
     <div class="container">
-        <p class="float-left">&copy; My Company <?= date('Y') ?></p>
-        <p class="float-right"><?= Yii::powered() ?></p>
+        <div class="row">
+            <div class="col text-right">
+                Created by <strong>Andris</strong>
+            </div>
+        </div>
     </div>
 </footer>
 
